@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentence Builder</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f2f6fb;
+  text-align: center;
+}
+
+.exercise {
+  background: white;
+  margin: 20px auto;
+  padding: 15px;
+  border-radius: 12px;
+  max-width: 500px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.word {
+  display: inline-block;
+  margin: 5px;
+  padding: 8px 12px;
+  background: #3498db;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.sentence {
+  min-height: 40px;
+  margin-bottom: 10px;
+  border-bottom: 2px dashed gray;
+  padding: 5px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 8px 15px;
+}
+
+.result {
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Build the sentence:</h2>
+
+<div id="app"></div>
+
+<script>
+const exercises = [
+  ["She", "always", "drinks", "coffee"],
+  ["I", "am", "learning", "English"],
+  ["They", "went", "to", "school"],
+  ["We", "are", "watching", "TV"],
+  ["He", "plays", "football", "every", "day"]
+];
+
+const app = document.getElementById("app");
+
+function shuffle(arr) {
+  return [...arr].sort(() => Math.random() - 0.5);
+}
+
+exercises.forEach((correctSentence) => {
+  const container = document.createElement("div");
+  container.className = "exercise";
+
+  let userSentence = [];
+
+  const sentenceDiv = document.createElement("div");
+  sentenceDiv.className = "sentence";
+
+  const wordBank = document.createElement("div");
+
+  const words = shuffle(correctSentence);
+
+  words.forEach(word => {
+    const el = document.createElement("span");
+    el.textContent = word;
+    el.className = "word";
+
+    el.onclick = () => {
+      userSentence.push(word);
+      updateSentence();
+      el.style.display = "none";
+    };
+
+    wordBank.appendChild(el);
+  });
+
+  function updateSentence() {
+    sentenceDiv.innerHTML = "";
+
+    userSentence.forEach((word, i) => {
+      const w = document.createElement("span");
+      w.textContent = word;
+      w.className = "word";
+
+      // remove word on click
+      w.onclick = () => {
+        userSentence.splice(i, 1);
+        updateSentence();
+
+        [...wordBank.children].forEach(el => {
+          if (el.textContent === word && el.style.display === "none") {
+            el.style.display = "inline-block";
+            return;
+          }
+        });
+      };
+
+      sentenceDiv.appendChild(w);
+    });
+  }
+
+  const btn = document.createElement("button");
+  btn.textContent = "Check";
+
+  const result = document.createElement("div");
+  result.className = "result";
+
+  btn.onclick = () => {
+    if (JSON.stringify(userSentence) === JSON.stringify(correctSentence)) {
+      result.textContent = "✅ Correct!";
+      result.style.color = "green";
+    } else {
+      result.textContent = "❌ Try again!";
+      result.style.color = "red";
+    }
+  };
+
+  container.appendChild(sentenceDiv);
+  container.appendChild(wordBank);
+  container.appendChild(btn);
+  container.appendChild(result);
+
+  app.appendChild(container);
+});
+</script>
+
+</body>
+</html>
