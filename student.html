@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sentence Builder</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="i18n.js" defer></script>
+  <script src="student.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1 data-i18n="appTitle">Sentence Builder</h1>
+    <nav class="nav">
+      <a href="student.html" data-i18n="studentPage">Gra</a>
+      <a href="admin.html" data-i18n="adminPage">Panel administratora</a>
+      <label class="language-label">
+        <span data-i18n="language">Język</span>
+        <select id="languageSelect" aria-label="Language">
+          <option value="pl">Polski</option>
+          <option value="ja">日本語</option>
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+          <option value="de">Deutsch</option>
+        </select>
+      </label>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2 data-i18n="gameSettings">Ustawienia gry</h2>
+
+      <label for="categoryFilter" data-i18n="sentenceCategory">Kategoria zdań</label>
+      <select id="categoryFilter"></select>
+
+      <label for="playerCount" data-i18n="playerCount">Liczba graczy</label>
+      <input id="playerCount" type="number" min="1" value="1">
+
+      <label for="playerNames" data-i18n="playerNames">
+        Imiona graczy — wpisz po przecinku (opcjonalnie)
+      </label>
+      <input id="playerNames" type="text" placeholder="Anna, Bartek, Kasia"
+             data-i18n-placeholder="namesPlaceholder">
+
+      <label for="rounds" data-i18n="rounds">Liczba zdań na każdego gracza</label>
+      <input id="rounds" type="number" min="1" value="5">
+
+      <button id="startGame" type="button" data-i18n="startGame">Rozpocznij grę</button>
+    </section>
+
+    <div id="gameArea"></div>
+    <section id="scoreArea" class="panel"></section>
+  </main>
+</body>
+</html>
