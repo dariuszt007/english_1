@@ -1,0 +1,89 @@
+{
+  "categories": [
+    "Present Simple",
+    "Present Continuous",
+    "Present Perfect",
+    "Present Perfect Continuous",
+    "Past Simple",
+    "Past Continuous",
+    "Past Perfect",
+    "Past Perfect Continuous",
+    "Future Simple",
+    "Future Continuous",
+    "Future Perfect",
+    "Future Perfect Continuous"
+  ],
+  "exercises": [
+    { "category": "Present Simple", "sentence": "She usually takes the bus to work." },
+    { "category": "Present Simple", "sentence": "My brother watches football every Saturday." },
+    { "category": "Present Simple", "sentence": "They live in a small village." },
+    { "category": "Present Simple", "sentence": "The shop opens at nine o'clock." },
+    { "category": "Present Simple", "sentence": "He always organises his desk before class." },
+
+    { "category": "Present Continuous", "sentence": "I am reading a book at the moment." },
+    { "category": "Present Continuous", "sentence": "They are waiting for the train." },
+    { "category": "Present Continuous", "sentence": "She is making dinner in the kitchen." },
+    { "category": "Present Continuous", "sentence": "We are studying for our English test." },
+    { "category": "Present Continuous", "sentence": "The children are playing in the garden." },
+
+    { "category": "Present Perfect", "sentence": "I have already finished my homework." },
+    { "category": "Present Perfect", "sentence": "She has visited Edinburgh twice." },
+    { "category": "Present Perfect", "sentence": "We have never seen that film." },
+    { "category": "Present Perfect", "sentence": "He has just lost his keys." },
+    { "category": "Present Perfect", "sentence": "They have lived here for five years." },
+
+    { "category": "Present Perfect Continuous", "sentence": "I have been learning English for two years." },
+    { "category": "Present Perfect Continuous", "sentence": "She has been working since eight o'clock." },
+    { "category": "Present Perfect Continuous", "sentence": "They have been waiting for the bus for an hour." },
+    { "category": "Present Perfect Continuous", "sentence": "We have been travelling around Wales all week." },
+    { "category": "Present Perfect Continuous", "sentence": "He has been playing tennis since lunchtime." },
+
+    { "category": "Past Simple", "sentence": "We went to the museum last Sunday." },
+    { "category": "Past Simple", "sentence": "She bought a new coat yesterday." },
+    { "category": "Past Simple", "sentence": "They watched a comedy after dinner." },
+    { "category": "Past Simple", "sentence": "I met my teacher at the station." },
+    { "category": "Past Simple", "sentence": "He studied French at university." },
+
+    { "category": "Past Continuous", "sentence": "I was cooking when the telephone rang." },
+    { "category": "Past Continuous", "sentence": "They were walking home in the rain." },
+    { "category": "Past Continuous", "sentence": "She was reading while her brother was studying." },
+    { "category": "Past Continuous", "sentence": "We were having lunch at one o'clock." },
+    { "category": "Past Continuous", "sentence": "He was driving to work when he saw the accident." },
+
+    { "category": "Past Perfect", "sentence": "She had left before I arrived." },
+    { "category": "Past Perfect", "sentence": "We had already eaten when they called." },
+    { "category": "Past Perfect", "sentence": "He had finished the report by Monday." },
+    { "category": "Past Perfect", "sentence": "They had never travelled abroad before that holiday." },
+    { "category": "Past Perfect", "sentence": "I had forgotten my umbrella, so I got wet." },
+
+    { "category": "Past Perfect Continuous", "sentence": "I had been studying for hours before I took a break." },
+    { "category": "Past Perfect Continuous", "sentence": "She had been working there for years before she retired." },
+    { "category": "Past Perfect Continuous", "sentence": "They had been travelling all day before they reached the hotel." },
+    { "category": "Past Perfect Continuous", "sentence": "He had been waiting for forty minutes when the bus arrived." },
+    { "category": "Past Perfect Continuous", "sentence": "We had been living in Bristol for a year before we moved." },
+
+    { "category": "Future Simple", "sentence": "I will help you with your bags." },
+    { "category": "Future Simple", "sentence": "She will call us tomorrow." },
+    { "category": "Future Simple", "sentence": "They will probably arrive late." },
+    { "category": "Future Simple", "sentence": "We will visit our grandparents next weekend." },
+    { "category": "Future Simple", "sentence": "He will send the letter this afternoon." },
+
+    { "category": "Future Continuous", "sentence": "This time tomorrow, I will be flying to London." },
+    { "category": "Future Continuous", "sentence": "She will be working at six o'clock." },
+    { "category": "Future Continuous", "sentence": "They will be staying with their cousins next week." },
+    { "category": "Future Continuous", "sentence": "We will be travelling by train on Friday." },
+    { "category": "Future Continuous", "sentence": "He will be studying when you arrive." },
+
+    { "category": "Future Perfect", "sentence": "I will have finished the book by Sunday." },
+    { "category": "Future Perfect", "sentence": "She will have left by the time we get there." },
+    { "category": "Future Perfect", "sentence": "They will have built the new bridge by next year." },
+    { "category": "Future Perfect", "sentence": "We will have completed the project before the meeting." },
+    { "category": "Future Perfect", "sentence": "He will have cooked dinner by seven o'clock." },
+
+    { "category": "Future Perfect Continuous", "sentence": "By June, I will have been teaching here for ten years." },
+    { "category": "Future Perfect Continuous", "sentence": "She will have been working for six hours by noon." },
+    { "category": "Future Perfect Continuous", "sentence": "They will have been travelling for a day by the time they arrive." },
+    { "category": "Future Perfect Continuous", "sentence": "By next month, we will have been living here for a year." },
+    { "category": "Future Perfect Continuous", "sentence": "He will have been practising for three hours by then." }
+  ]
+}
