@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentence Builder</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #f2f6fb;
+      color: #243247;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+    }
+
+    .top-bar {
+      max-width: 800px;
+      margin: 0 auto 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .panel {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .card,
+    .exercise {
+      background: white;
+      margin: 16px auto;
+      padding: 18px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .exercise {
+      max-width: 600px;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 6px;
+      font-weight: bold;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+
+    button {
+      margin: 8px 4px 0 0;
+      padding: 10px 15px;
+      border: 0;
+      border-radius: 6px;
+      background: #2879c7;
+      color: white;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1d65a8;
+    }
+
+    button.secondary {
+      background: #64748b;
+    }
+
+    button.danger {
+      background: #c0392b;
+    }
+
+    button.active {
+      background: #174f83;
+    }
+
+    .sentence {
+      min-height: 48px;
+      margin: 12px 0;
+      padding: 8px;
+      border-bottom: 2px dashed #94a3b8;
+    }
+
+    .word {
+      display: inline-block;
+      margin: 5px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: #3498db;
+      color: white;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .word:hover {
+      background: #217db8;
+    }
+
+    .category-label {
+      color: #53657b;
+      font-size: 0.95rem;
+    }
+
+    .result {
+      min-height: 24px;
+      margin-top: 8px;
+      font-weight: bold;
+    }
+
+    .admin-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .admin-item:last-child {
+      border-bottom: 0;
+    }
+
+    .empty-message {
+      text-align: center;
+      color: #64748b;
+      padding: 15px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 12px;
+      }
+
+      .card,
+      .exercise {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Sentence Builder</h1>
+
+  <div class="top-bar">
+    <button id="studentTab" class="active" type="button">Panel ucznia</button>
+    <button id="adminTab" class="secondary" type="button">Panel administratora</button>
+  </div>
+
+  <main>
+    <section id="studentPanel" class="panel">
+      <div class="card">
+        <label for="categoryFilter">Wybierz kategorię:</label>
+        <select id="categoryFilter"></select>
+      </div>
+
+      <div id="exercises"></div>
+    </section>
+
+    <section id="adminPanel" class="panel hidden">
+      <div class="card">
+        <h2>Dodaj zdanie</h2>
+
+        <form id="exerciseForm">
+          <label for="sentenceInput">Poprawne zdanie:</label>
+          <textarea
+            id="sentenceInput"
+            placeholder="Na przykład: She drinks coffee every morning."
+            required
+          ></textarea>
+
+          <label for="categorySelect">Kategoria:</label>
+          <select id="categorySelect"></select>
+
+          <button type="submit">Dodaj zdanie</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Dodaj kategorię</h2>
+
+        <form id="categoryForm">
+          <label for="newCategoryInput">Nazwa kategorii:</label>
+          <input
+            id="newCategoryInput"
+            type="text"
+            placeholder="Na przykład: Past Continuous"
+            required
+          >
+          <button type="submit">Dodaj kategorię</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Zdania w zestawie</h2>
+        <div id="adminExercises"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "sentenceBuilderData";
+
+    const defaultCategories = [
+      "Present Simple",
+      "Present Continuous",
+      "Past Simple",
+      "Past Continuous",
+      "Future Simple",
+      "Present Perfect"
+    ];
+
+    const defaultExercises = [
+      { id: "default-1", category: "Present Simple", sentence: "She always drinks coffee." },
+      { id: "default-2", category: "Present Continuous", sentence: "I am learning English." },
+      { id: "default-3", category: "Past Simple", sentence: "They went to school." },
+      { id: "default-4", category: "Present Continuous", sentence: "We are watching TV." },
+      { id: "default-5", category: "Present Simple", sentence: "He plays football every day." }
+    ];
+
+    function loadData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          return {
+            categories: Array.isArray(parsed.categories) ? parsed.categories : [...defaultCategories],
+            exercises: Array.isArray(parsed.exercises) ? parsed.exercises : [...defaultExercises]
+          };
+        }
+      } catch (error) {
+        console.error("Nie udało się odczytać zapisanych danych:", error);
+      }
+
+      return {
+        categories: [...defaultCategories],
+        exercises: [...defaultExercises]
+      };
+    }
+
+    let data = loadData();
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    const studentPanel = document.getElementById("studentPanel");
+    const adminPanel = document.getElementById("adminPanel");
+    const studentTab = document.getElementById("studentTab");
+    const adminTab = document.getElementById("adminTab");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const categorySelect = document.getElementById("categorySelect");
+    const exercisesContainer = document.getElementById("exercises");
+    const adminExercises = document.getElementById("adminExercises");
+
+    function showPanel(panelName) {
+      const isStudent = panelName === "student";
+
+      studentPanel.classList.toggle("hidden", !isStudent);
+      adminPanel.classList.toggle("hidden", isStudent);
+
+      studentTab.classList.toggle("active", isStudent);
+      studentTab.classList.toggle("secondary", !isStudent);
+      adminTab.classList.toggle("active", !isStudent);
+      adminTab.classList.toggle("secondary", isStudent);
+    }
+
+    studentTab.addEventListener("click", () => showPanel("student"));
+    adminTab.addEventListener("click", () => showPanel("admin"));
+
+    function fillCategorySelects() {
+      const currentFilter = categoryFilter.value;
+
+      categoryFilter.innerHTML = "";
+      categorySelect.innerHTML = "";
+
+      const allOption = document.createElement("option");
+      allOption.value = "all";
+      allOption.textContent = "Wszystkie kategorie";
+      categoryFilter.appendChild(allOption);
+
+      data.categories.forEach(category => {
+        const filterOption = document.createElement("option");
+        filterOption.value = category;
+        filterOption.textContent = category;
+        categoryFilter.appendChild(filterOption);
+
+        const adminOption = document.createElement("option");
+        adminOption.value = category;
+        adminOption.textContent = category;
+        categorySelect.appendChild(adminOption);
+      });
+
+      if (data.categories.includes(currentFilter)) {
+        categoryFilter.value = currentFilter;
+      } else {
+        categoryFilter.value = "all";
+      }
+    }
+
+    function shuffle(array) {
+      const shuffled = [...array];
+
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+
+      return shuffled;
+    }
+
+    function renderExercises() {
+      exercisesContainer.innerHTML = "";
+
+      const selectedCategory = categoryFilter.value;
+      const visibleExercises = data.exercises.filter(exercise =>
+        selectedCategory === "all" || exercise.category === selectedCategory
+      );
+
+      if (visibleExercises.length === 0) {
+        const message = document.createElement("p");
+        message.className = "empty-message";
+        message.textContent = "Brak zdań w tej kategorii.";
+        exercisesContainer.appendChild(message);
+        return;
+      }
+
+      visibleExercises.forEach(exercise => {
+        const container = document.createElement("div");
+        container.className = "exercise";
+
+        const categoryLabel = document.createElement("div");
+        categoryLabel.className = "category-label";
+        categoryLabel.textContent = "Kategoria: " + exercise.category;
+
+        const sentenceDiv = document.createElement("div");
+        sentenceDiv.className = "sentence";
+
+        const wordBank = document.createElement("div");
+
+        const correctWords = exercise.sentence.trim().split(/\s+/);
+        const shuffledWords = shuffle(
+          correctWords.map((text, index) => ({ id: index, text }))
+        );
+
+        const selectedWords = [];
+
+        function updateSentence() {
+          sentenceDiv.innerHTML = "";
+
+          selectedWords.forEach((word, index) => {
+            const wordElement = document.createElement("span");
+            wordElement.className = "word";
+            wordElement.textContent = word.text;
+            wordElement.title = "Kliknij, aby usunąć";
+
+            wordElement.addEventListener("click", () => {
+              const removedWord = selectedWords.splice(index, 1)[0];
+              const bankWord = wordBank.querySelector(
+                `[data-word-id="${removedWord.id}"]`
+              );
+
+              if (bankWord) {
+                bankWord.classList.remove("hidden");
+              }
+
+              updateSentence();
+            });
+
+            sentenceDiv.appendChild(wordElement);
+          });
+        }
+
+        shuffledWords.forEach(word => {
+          const wordElement = document.createElement("span");
+          wordElement.className = "word";
+          wordElement.textContent = word.text;
+          wordElement.dataset.wordId = word.id;
+
+          wordElement.addEventListener("click", () => {
+            selectedWords.push(word);
+            wordElement.classList.add("hidden");
+            updateSentence();
+          });
+
+          wordBank.appendChild(wordElement);
+        });
+
+        const checkButton = document.createElement("button");
+        checkButton.type = "button";
+        checkButton.textContent = "Sprawdź";
+
+        const resetButton = document.createElement("button");
+        resetButton.type = "button";
+        resetButton.textContent = "Wyczyść";
+        resetButton.className = "secondary";
+
+        const result = document.createElement("div");
+        result.className = "result";
+
+        checkButton.addEventListener("click", () => {
+          const answer = selectedWords.map(word => word.text).join(" ");
+          const correctAnswer = correctWords.join(" ");
+
+          if (answer === correctAnswer) {
+            result.textContent = "Poprawnie!";
+            result.style.color = "green";
+          } else {
+            result.textContent = "Spróbuj jeszcze raz.";
+            result.style.color = "red";
+          }
+        });
+
+        resetButton.addEventListener("click", () => {
+          selectedWords.length = 0;
+          wordBank.querySelectorAll(".word").forEach(word => {
+            word.classList.remove("hidden");
+          });
+          result.textContent = "";
+          updateSentence();
+        });
+
+        container.appendChild(categoryLabel);
+        container.appendChild(sentenceDiv);
+        container.appendChild(wordBank);
+        container.appendChild(checkButton);
+        container.appendChild(resetButton);
+        container.appendChild(result);
+
+        exercisesContainer.appendChild(container);
+      });
+    }
+
+    function renderAdminExercises() {
+      adminExercises.innerHTML = "";
+
+      if (data.exercises.length === 0) {
+        const message = document.createElement("p");
+        message.className = "empty-message";
+        message.textContent = "Nie dodano jeszcze żadnych zdań.";
+        adminExercises.appendChild(message);
+        return;
+      }
+
+      data.exercises.forEach(exercise => {
+        const item = document.createElement("div");
+        item.className = "admin-item";
+
+        const text = document.createElement("div");
+        text.textContent = exercise.sentence + " — " + exercise.category;
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "danger";
+        deleteButton.textContent = "Usuń";
+
+        deleteButton.addEventListener("click", () => {
+          data.exercises = data.exercises.filter(item => item.id !== exercise.id);
+          saveData();
+          renderAll();
+        });
+
+        item.appendChild(text);
+        item.appendChild(deleteButton);
+        adminExercises.appendChild(item);
+      });
+    }
+
+    document.getElementById("exerciseForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const sentence = document.getElementById("sentenceInput").value.trim();
+      const category = categorySelect.value;
+
+      if (!sentence || !category) {
+        return;
+      }
+
+      data.exercises.push({
+        id: "exercise-" + Date.now() + "-" + Math.random().toString(16).slice(2),
+        category,
+        sentence
+      });
+
+      saveData();
+      document.getElementById("sentenceInput").value = "";
+      renderAll();
+    });
+
+    document.getElementById("categoryForm").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const input = document.getElementById("newCategoryInput");
+      const category = input.value.trim();
+
+      if (!category) {
+        return;
+      }
+
+      const alreadyExists = data.categories.some(
+        existing => existing.toLowerCase() === category.toLowerCase()
+      );
+
+      if (alreadyExists) {
+        alert("Taka kategoria już istnieje.");
+        return;
+      }
+
+      data.categories.push(category);
+      saveData();
+      input.value = "";
+      renderAll();
+      categorySelect.value = category;
+    });
+
+    categoryFilter.addEventListener("change", renderExercises);
+
+    function renderAll() {
+      fillCategorySelects();
+      renderExercises();
+      renderAdminExercises();
+    }
+
+    renderAll();
+  </script>
+</body>
+</html>
